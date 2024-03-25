@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fuild">
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">{% block title %}Search Book{% endblock %}</span>
+    </nav>
+    <form class="container">
+        <div class="form-group row mt-5">
+            <label for="title" class="form-label col-sm-2" >Book Name</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="book_title" required>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="authors" class="form-label col-sm-2">Authors</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="book_authors" required>
+        </div>
+        <div>
+            <button class="btn btn-primary mb-5" onclick="searchBook()" id="search_btn" type="button" disabled>Search Books</button>
+        </div>
+        <div id="searchResultTable">
+
+        </div>
+    </form>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let title = document.getElementById('book_title');
+        let authors = document.getElementById('book_authors');
+        let searchBtn = document.getElementById('search_btn');
+
+        function checkInputs() {
+            if (title.value.trim() !== '' || authors.value.trim() !== '') {
+                searchBtn.disabled = false;
+                } else {
+                searchBtn.disabled = true;
+            }
+        }
+
+        // Event listeners to trigger validation
+        title.addEventListener('input', checkInputs);
+        authors.addEventListener('input', checkInputs);
+
+        checkInputs();
+
+
+    });
+
+    function searchBook() {
+
+        var bookTitle = document.getElementById('book_title').value;
+        var bookAuthors = document.getElementById('book_authors').value;
+        console.log("======");
+        console.log(bookAuthors, bookTitle);
+        $.ajax({ 
+            url: '/books/search/book', 
+            type: 'POST', 
+            contentType: 'application/json',
+            data: JSON.stringify({'title': bookTitle, 'authors': bookAuthors}),
+            success: function(response) { 
+                // document.getElementById('output').innerHTML = response;
+                var myTableDiv = document.getElementById("searchResultTable");
+                myTableDiv.className = "table table-striped";
+
+                var table = document.createElement('table');
+                table.border = '1';
+
+                var tableHead = document.createElement('thead');
+                var tableHeaderRow = document.createElement('tr');
+                tableHead.appendChild(tableHeaderRow); 
+
+                var bookTitle=document.createElement('th');
+                bookTitle.textContent = "title";
+                var bookAuthor=document.createElement('th');
+                bookAuthor.textContent = "authors";
+                var bookPublisher=document.createElement('th');
+                bookPublisher.textContent = "publishers";
+                var bookAvailable=document.createElement('th');
+                bookAvailable.textContent = "books_available";
+
+                tableHeaderRow.append(bookTitle);
+                tableHeaderRow.append(bookAuthor);
+                tableHeaderRow.append(bookPublisher);
+                tableHeaderRow.append(bookAvailable);
+                table.appendChild(tableHead);
+
+                var tableBody = document.createElement('tbody');
+                table.appendChild(tableBody);
+
+                for (var i = 0; i < response.length; i++) {
+                    var tr = document.createElement('tr');
+                    tableBody.appendChild(tr);
+
+                    for (let index in response[i]) {
+                        console.log(index);
+                        var td = document.createElement('td');
+                        td.appendChild(document.createTextNode(response[i][index]));
+                        tr.appendChild(td);
+                    }
+                }
+                myTableDiv.appendChild(table);
+            }, 
+            error: function(error) { 
+                console.log(error); 
+            } 
+        }); 
+    }
+</script>
+{% endblock %}

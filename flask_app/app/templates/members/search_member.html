@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fuild">
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">{% block title %}Search Member{% endblock %}</span>
+    </nav>
+    <form class="container">
+        <div class="form-group row mt-5">
+            <label for="member_id" class="form-label col-sm-2" >Member ID</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="member_id" required>
+        </div>
+        <div>
+            <button class="btn btn-primary mb-5" onclick="searchMemberId()" id="search_btn" type="button">Search Member</button>
+        </div>
+        <div id="searchResultTable">
+
+        </div>
+    </form>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let memberID = document.getElementById('member_id');
+        let searchBtn = document.getElementById('search_btn');
+        function checkInputs() {
+            if (memberID.value.trim() !== '') {
+                searchBtn.disabled = false;
+                } else {
+                searchBtn.disabled = true;
+            }
+        }
+
+        // Event listeners to trigger validation
+        memberID.addEventListener('input', checkInputs);
+        checkInputs();
+
+
+    });
+
+    function searchMemberId() {
+        console.log("===========");
+        var memberId = document.getElementById('member_id').value;
+        console.log(memberId);
+        $.ajax({ 
+            url: '/members/search/member', 
+            type: 'POST', 
+            contentType: 'application/json',
+            data: JSON.stringify({'memberID': memberId}),
+            success: function(response) { 
+                
+                if (response["member_id"] !== '') {
+                    var searchResultTableDiv = document.getElementById("searchResultTable");
+                    searchResultTableDiv.className = "table table-striped";
+
+                    var table = document.createElement('table');
+                    table.border = '1';
+                    
+                    searchResultTableDiv.appendChild(table);
+
+                    var tableHead = document.createElement('thead');
+                    var tableHeaderRow = document.createElement('tr');
+                    tableHead.appendChild(tableHeaderRow);
+                    table.appendChild(tableHead);
+
+                    var memberID = document.createElement('th');
+                    memberID.textContent = "member_id";
+                    tableHeaderRow.appendChild(memberID);
+
+                    var firstName = document.createElement('th');
+                    firstName.textContent = "first_name";
+                    tableHeaderRow.appendChild(firstName);
+
+                    var lastName = document.createElement('th');
+                    lastName.textContent = "last_name";
+                    tableHeaderRow.appendChild(lastName);
+
+                    var contactNumber = document.createElement('th');
+                    contactNumber.textContent = "contact_number";
+                    tableHeaderRow.appendChild(contactNumber);
+
+                    var email = document.createElement('th');
+                    email.textContent = "email";
+                    tableHeaderRow.appendChild(email);
+                    
+                    var tableBody = document.createElement('tbody');
+                    var tableContentRow = document.createElement('tr');
+                    tableBody.appendChild(tableContentRow);
+                    table.appendChild(tableBody);
+
+                    var memberIdValue = document.createElement('td');
+                    memberIdValue.textContent = response["member_id"];
+                    tableContentRow.appendChild(memberIdValue);
+
+                    var firstNameValue = document.createElement('td');
+                    firstNameValue.textContent = response["first_name"];
+                    tableContentRow.appendChild(firstNameValue);
+
+                    var lastNameValue = document.createElement('td');
+                    lastNameValue.textContent = response["last_name"];
+                    tableContentRow.appendChild(lastNameValue);
+
+                    var contactNumberValue = document.createElement('td');
+                    contactNumberValue.textContent = response["contact_number"];
+                    tableContentRow.appendChild(contactNumberValue);
+
+                    var emailValue = document.createElement('td');
+                    emailValue.textContent = response["email"];
+                    tableContentRow.appendChild(emailValue);
+                } else {
+                    alert("Entered Member ID not found");
+                }
+                
+            }, 
+            error: function(error) { 
+                console.log(error); 
+            } 
+        })
+    }; 
+    
+</script>
+{% endblock %}

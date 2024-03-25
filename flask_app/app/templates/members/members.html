@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="container-fuild">
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">{% block title %}Members{% endblock %}</span>
+    </nav>
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>MemberID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for member in members %}
+                <tr class="clickable" style="cursor:pointer" onclick="showMemberDetails(this.id)" id="row_{{member.member_id}}">
+                  <td>{{member["member_id"]}}</td>
+                  <td>{{member["first_name"]}}</td>
+                  <td>{{member["last_name"]}}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+      </table>
+      <div class="text-center">
+        <button type="button" class="btn btn-success" onclick="addMember()"><strong>Add Member</strong></button>
+        <button type="button" class="btn btn-info" onclick="searchMember()"><strong>Search Member</strong></button>
+      </div>
+      <script>
+        function addMember() {
+          window.location.href="/members/add_member";
+        }
+        function showMemberDetails(id){
+          let member_id = id.split("_")[1]
+          $.ajax({ 
+              url: '/members/member/' + member_id, 
+              type: 'GET', 
+              contentType: 'application/json', 
+              success: function(response) { 
+                  // alert(response);
+                  window.location.href='/members/member/' + member_id
+              }, 
+              error: function(error) { 
+                  console.log(error); 
+              } 
+          });
+        };
+        function searchMember() {
+          window.location.href="/members/search";
+        }
+      </script>
+
+{%endblock %}

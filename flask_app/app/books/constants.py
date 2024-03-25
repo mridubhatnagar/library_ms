@@ -1,0 +1,1 @@
+DAILY_BOOK_RENT = 10

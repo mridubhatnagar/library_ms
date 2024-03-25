@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fuild">
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">{% block title %}Payment Details{% endblock %}</span>
+    </nav>
+    <form class="container">
+        <div class="form-group row mt-3">
+            <label for="member_id" class="form-label col-sm-2">Member ID</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="member_id" value="{{payment_details['member_id']}}" readonly>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="amount_due" class="form-label col-sm-2">Total Amount Due</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="amount_due" value="{{payment_details['amount_due']}}" readonly>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="total_amount_paid" class="form-label col-sm-2">Total Amount Paid</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="total_amount_paid" value="{{payment_details['amount_paid']}}" readonly>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="amount_paid" class="form-label col-sm-2" style="display:none" id="amount_paid_label">Amount Paid</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="amount_paid" value="{{payment_details['amount_paid']}}" hidden>
+        </div>
+        <div id="action_btns">
+            <button class="btn btn-primary" onclick="payNow()" type="button" id="pay_now">Pay Now</button>
+        </div>
+    </form>
+</div>
+<script>
+    function payNow() {
+        document.getElementById('amount_paid').hidden = false;
+        document.getElementById('amount_paid_label').style.display = "inline";
+        let saveBtn = document.createElement('button');
+        saveBtn.id = "save_btn";
+        saveBtn.className = "btn btn-warning";
+        saveBtn.type = "button";
+        saveBtn.textContent = "Save Details";
+        buttons = document.getElementById('action_btns');
+        buttons.appendChild(saveBtn);
+        saveBtn.addEventListener('click', function() {
+            saveDetails();
+        })
+    }
+    function saveDetails() {
+        document.getElementById('pay_now').disabled = true;    
+        let amountPaid = document.getElementById('amount_paid').value;
+        let memberID = document.getElementById('member_id').value;
+        $.ajax({ 
+            url: '/payments/save', 
+            type: 'POST', 
+            contentType: 'application/json', 
+            data: JSON.stringify({ 'memberID': memberID, 'amountPaid': amountPaid}), 
+            success: function(response) { 
+                alert("payment details saved.")
+                window.location.href='/books/make_payment?member_id='+memberID;
+            }, 
+            error: function(error) { 
+                console.log(error); 
+            } 
+        });
+    }
+</script>
+{% endblock %}

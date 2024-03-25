@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fuild">
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">{% block title %}Issue Book{% endblock %}</span>
+    </nav>
+    <form class="container">
+        <div class="form-group row mt-5">
+            <label for="book_id" class="form-label col-sm-2" >Book ID</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="book_id" required>
+        </div>
+        <div>
+            <button class="btn btn-primary mb-5" onclick="searchBook()" id="search_btn" type="button" disabled>Search Books</button>
+        </div>
+        <div id="searchResultTable">
+
+        </div>
+    </form>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let bookId = document.getElementById('book_id');
+        let searchBtn = document.getElementById('search_btn');
+
+        function checkInputs() {
+            if (bookId.value.trim() !== '') {
+                searchBtn.disabled = false;
+                } else {
+                searchBtn.disabled = true;
+            }
+        }
+
+        // Event listeners to trigger validation
+        bookId.addEventListener('input', checkInputs);
+        checkInputs();
+    });
+
+    function searchBook() {
+        var bookID = document.getElementById('book_id').value;
+        console.log("======");
+        console.log(bookID);
+        var memberID = '{{member_id}}'
+        console.log(memberID);
+        $.ajax({ 
+            url: '/books/search/book?book_id=' + bookID + '&member_id=' + memberID, 
+            type: 'GET', 
+            contentType: 'application/json',
+            success: function(response) { 
+                // document.getElementById('output').innerHTML = response;
+                console.log(response);
+                var myTableDiv = document.getElementById("searchResultTable");
+                myTableDiv.className = "table table-striped";
+
+                var table = document.createElement('table');
+                table.border = '1';
+
+                var tableHead = document.createElement('thead');
+                var tableHeaderRow = document.createElement('tr');
+                tableHead.appendChild(tableHeaderRow); 
+
+                var bookTitle=document.createElement('th');
+                bookTitle.textContent = "title";
+                var bookAuthor=document.createElement('th');
+                bookAuthor.textContent = "authors";
+                var bookPublisher=document.createElement('th');
+                bookPublisher.textContent = "publishers";
+                var bookAvailable=document.createElement('th');
+                bookAvailable.textContent = "books_available";
+
+                tableHeaderRow.append(bookTitle);
+                tableHeaderRow.append(bookAuthor);
+                tableHeaderRow.append(bookPublisher);
+                tableHeaderRow.append(bookAvailable);
+                table.appendChild(tableHead);
+
+                var tableBody = document.createElement('tbody');
+                table.appendChild(tableBody);
+
+                var tr = document.createElement('tr');
+                tableBody.appendChild(tr);
+                
+                var tableBody = document.createElement('tbody');
+                var tableContentRow = document.createElement('tr');
+                tableBody.appendChild(tableContentRow);
+                table.appendChild(tableBody);
+
+                var bookTitleValue = document.createElement('td');
+                bookTitleValue.textContent = response["title"];
+                tableContentRow.appendChild(bookTitleValue);
+
+                var bookAuthorsValue = document.createElement('td');
+                bookAuthorsValue.textContent = response["authors"];
+                tableContentRow.appendChild(bookAuthorsValue);
+
+                var publisherValue = document.createElement('td');
+                publisherValue.textContent = response["publisher"];
+                tableContentRow.appendChild(publisherValue);
+
+                var bookAvailableValue = document.createElement('td');
+                bookAvailableValue.textContent = response["books_available"];
+                tableContentRow.appendChild(bookAvailableValue);
+
+                var IssueBtnCol = document.createElement('td');
+                IssueBtn = document.createElement('button');
+                
+                IssueBtn.className = "btn btn-success"
+                IssueBtn.textContent = "Issue";
+                IssueBtn.type = "button"
+                IssueBtn.id="member_" + memberID + "_" + "book_" + bookID
+                tableContentRow.appendChild(IssueBtn);
+                myTableDiv.appendChild(table);
+
+                IssueBtn.addEventListener('click', function() {
+                    
+                    issue(memberID, bookID);
+                    
+                });
+            }, 
+            error: function(error) { 
+                console.log(error); 
+            } 
+        }); 
+    }
+
+    function issue(member_id, book_id) {
+        console.log(member_id, book_id);
+        $.ajax({ 
+              url: '/books/issue?member_id='+member_id + '&book_id=' + book_id, 
+              type: 'GET', 
+              success: function(response) { 
+                  alert(response);
+                  window.location.href='/members';
+              }, 
+              error: function(error) { 
+                  console.log(error); 
+              } 
+          });
+
+    }
+</script>
+{% endblock %}

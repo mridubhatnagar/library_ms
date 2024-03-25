@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fuild">
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">{% block title %}Books{% endblock %}</span>
+    </nav>
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>BookID</th>
+                <th>Title</th>
+                <th>Authors</th>
+                <th>Publisher</th>
+                <th>Books Available</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for book in books %}
+                <tr class="clickable" style="cursor:pointer" onclick="showBookDetails(this.id)" id="row_{{book.bookID}}">
+                  <td>{{book["bookID"]}}</td>
+                  <td>{{book["title"]}}</td>
+                  <td>{{book["authors"]}}</td>
+                  <td>{{book["publisher"]}}</td>
+                  <td>{{book["books_available"]}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+      </table>
+      <div class="text-center">
+        <button type="button" class="btn btn-success" onclick="addBook()"><strong>Add Book</strong></button>
+        <button type="button" class="btn btn-info" onclick="searchBooks()"><strong>Search Book</strong></button>
+      </div>
+      <script>
+        function addBook() {
+          window.location.href="/books/add_books";
+        }
+        function showBookDetails(id){
+          let book_id = id.split("_")[1]
+          $.ajax({ 
+              url: '/books/book/' + book_id, 
+              type: 'GET', 
+              contentType: 'application/json', 
+              success: function(response) { 
+                  // alert(response);
+                  window.location.href='/books/book/' + book_id
+              }, 
+              error: function(error) { 
+                  console.log(error); 
+              } 
+          });
+        };
+        function searchBooks() {
+          window.location.href="/books/search";
+        }
+      </script>
+{% endblock %} 

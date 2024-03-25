@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="container-fuild">
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">{% block title %}Show Member Details{% endblock %}</span>
+    </nav>
+    <form class="container">
+        <div class="form-group row mt-3">
+            <label for="member_id" class="form-label col-sm-2">Member ID</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="member_id" value='{{member_details["member_id"]}}' readonly>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="first_name" class="form-label col-sm-2">First Name</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="first_name" value='{{member_details["first_name"]}}' readonly>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="last_name" class="form-label col-sm-2">Last Name</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="last_name" value='{{member_details["last_name"]}}' readonly>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="contact_number" class="form-label col-sm-2">Contact Number</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="contact_number" value='{{member_details["contact_number"]}}' readonly>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="email" class="form-label col-sm-2">Email</label>
+            <input type="test" class="form-control input-sm col-sm-10" id="email" value='{{member_details["email"]}}' readonly>
+        </div>
+        <div>
+            <button type="button" class="btn btn-warning" id="edit_{{member_details['member_id']}}" onclick="editBook(this.id)"><strong>Edit</strong></button>
+            <button type="button" class="btn btn-warning" id="save_{{member_details['member_id']}}" onclick="saveContactDetails(this.id)" style="display:none"><strong>SAVE</strong></button>
+            <button type="button" class="btn btn-danger" id="delete_{{member_details['member_id']}}" onclick="deleteBook(this.id)"><strong>DELETE</strong></button>
+            <button type="button" class="btn btn-info" id="issue_{{member_details['member_id']}}" onclick="issueBook(this.id)"><strong>Issue Book</strong></button>
+            <button type="button" class="btn btn-info" id="return_{{member_details['member_id']}}" onclick="returnBook(this.id)"><strong>Return Book</strong></button>
+            <button type="button" class="btn btn-info" id="payment_{{member_details['member_id']}}" onclick="makePayment(this.id)"><strong>Make Payment</strong></button>
+        </div>
+    </form>
+</div>
+<script>
+    function saveContactDetails(id) {
+        let member_id = id.split("_")[1]
+        let contact_number = document.getElementById("contact_number").value;
+        let email = document.getElementById("email").value;
+        $.ajax({ 
+            url: '/members/save', 
+            type: 'POST', 
+            contentType: 'application/json', 
+            data: JSON.stringify({"member_id": member_id, "email": email, "contact_number": contact_number}),
+            success: function(response) { 
+                alert(response);
+                window.location.href="/members";
+            }, 
+            error: function(error) { 
+                console.log(error); 
+            } 
+            });
+             
+    }
+    function editBook(id) {
+          let member_id= id.split("_")[1]
+          document.getElementById("save_" + member_id).style.display = "inline";
+          document.getElementById("contact_number").readOnly = false;
+          document.getElementById("email").readOnly = false;
+        }
+    function deleteBook(id) {
+          $.ajax({ 
+              url: '/members/delete', 
+              type: 'POST', 
+              contentType: 'application/json', 
+              data: JSON.stringify({'member_id': id}), 
+              success: function(response) { 
+                  alert(response);
+                  window.location.href="/members";
+              }, 
+              error: function(error) { 
+                  console.log(error); 
+              } 
+          });
+        }
+    function issueBook(id) {
+        member_id = id.split("_")[1]
+        $.ajax({ 
+              url: '/books/issue_book?member_id='+member_id, 
+              type: 'GET', 
+              success: function(response) { 
+                //   alert(response);
+                  window.location.href="/books/issue_book?member_id=" + member_id;
+              }, 
+              error: function(error) { 
+                  console.log(error); 
+              } 
+          });
+    }
+    function returnBook(id) {
+        let member_id = id.split("_")[1]
+        $.ajax({ 
+              url: '/books/return_book?member_id='+member_id, 
+              type: 'GET', 
+              success: function(response) { 
+                //   alert(response);
+                  window.location.href="/books/return_book?member_id=" + member_id;
+              }, 
+              error: function(error) { 
+                  console.log(error); 
+              } 
+          });
+    }
+    function makePayment(id) {
+        let member_id = id.split("_")[1]
+        $.ajax({ 
+              url: '/books/make_payment?member_id='+member_id, 
+              type: 'GET', 
+              success: function(response) { 
+                //   alert(response);
+                  window.location.href='/books/make_payment?member_id='+member_id;
+              }, 
+              error: function(error) { 
+                  console.log(error); 
+              } 
+        });
+    }
+</script>
+{% endblock %}
+

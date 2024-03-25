@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fuild">
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">{% block title %}Return Books{% endblock %}</span>
+    </nav>
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>BookID</th>
+                <th>Book Issue Date</th>
+                <th>Book Return Date</th>
+                <th>Today's Date</th>
+                <th>Total Days</th>
+                <th>Total Rent Due</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in result %}
+                <tr>
+                    <td>{{row["book_id"]}}</td>
+                    <td>{{row["book_issue_date"]}}</td>
+                    <td>{{row["book_return_date"]}}</td>
+                    <td>{{row["current_date"]}}</td>
+                    <td>{{row["total_days"]}}</td>
+                    <td>{{row["total_rent_due"]}}</td>
+                    <td><button type="button" class="btn btn-primary" onclick="issueReturn(this.id)" id="mem_{{row['member_id']}}&book_{{row['book_id']}}">Issue Return</button></td>
+                </tr>
+              {% else %}
+                <script>
+                    alert("No books issued");
+                </script>
+              {% endfor %}
+            </tbody>
+      </table>
+      <script>
+        function issueReturn(id) {
+            let member_id = (id.split("&")[0]).split("_")[1];
+            let book_id = (id.split("&")[1]).split("_")[1];
+            $.ajax({ 
+                url: '/books/issue_return?member_id=' + member_id + '&book_id=' + book_id, 
+                type: 'GET', 
+                contentType: 'application/json', 
+                success: function(response) { 
+                    alert(response);
+                    window.location.href='/members/member/' + member_id;
+                }, 
+                error: function(error) { 
+                    console.log(error); 
+                } 
+            });
+        };
+      </script>
+{% endblock %} 

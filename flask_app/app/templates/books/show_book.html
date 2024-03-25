@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="container-fuild">
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">{% block title %}Show Book Details{% endblock %}</span>
+    </nav>
+    <form class="container">
+        <div class="form-group row mt-3">
+            <label for="title" class="form-label col-sm-2">Book Name</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="book_title" value='{{book_details["title"]}}' readonly>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="authors" class="form-label col-sm-2">Authors</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="book_authors" value='{{book_details["authors"]}}' readonly>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="isbn" class="form-label col-sm-2">ISBN</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="book_isbn" value='{{book_details["isbn"]}}' readonly>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="publisher" class="form-label col-sm-2">Publishers</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="book_publisher" value='{{book_details["publisher"]}}' readonly>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="stock" class="form-label col-sm-2">Stock</label>
+            <input type="number" class="form-control input-sm col-sm-10" id="books_stock" min="0" max="10" value='{{book_details["stock"]}}' readonly>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="language_code" class="form-label col-sm-2">Langugage Code</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="book_publisher" value='{{book_details["language_code"]}}' readonly>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="num_pages" class="form-label col-sm-2">Number of Pages</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="num_pages" value='{{book_details["num_pages"]}}' readonly>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="average_rating" class="form-label col-sm-2">Average Rating</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="average_rating" value='{{book_details["average_rating"]}}' readonly>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="publication_date" class="form-label col-sm-2">Publication Date</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="publication_date" value='{{book_details["publication_date"]}}' readonly>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="available" class="form-label col-sm-2">Books Available</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="available" value='{{book_details["books_available"]}}' readonly>
+        </div>
+        <div>
+            <button type="button" class="btn btn-warning" id="edit_{{book_details['bookID']}}" onclick="editBook(this.id)"><strong>Edit</strong></button>
+            <button type="button" class="btn btn-warning" id="save_{{book_details['bookID']}}" onclick="saveStock(this.id)" style="display:none"><strong>Save</strong></button>
+            <td><button type="button" class="btn btn-danger" id="delete_{{book_details['bookID']}}" onclick="deleteBook(this.id)">DELETE</button></td>
+        </div>
+    </form>
+</div>
+<script>
+    function saveStock(id) {
+        let book_id = id.split("_")[1]
+        let stock = document.getElementById("books_stock").value;
+        console.log(stock); 
+        $.ajax({ 
+            url: '/books/save', 
+            type: 'POST', 
+            contentType: 'application/json', 
+            data: JSON.stringify({"bookID": book_id, "stock": stock}),
+            success: function(response) { 
+                alert(response);
+                window.location.href="/books";
+            }, 
+            error: function(error) { 
+                console.log(error); 
+            } 
+            });
+             
+    }
+    function editBook(id) {
+          let book_id = id.split("_")[1]
+          document.getElementById("save_" + book_id).style.display = "inline";
+          document.getElementById("books_stock").readOnly = false;
+        }
+    function deleteBook(id) {
+          $.ajax({ 
+              url: '/books/delete', 
+              type: 'POST', 
+              contentType: 'application/json', 
+              data: JSON.stringify({'bookID': id}), 
+              success: function(response) { 
+                  alert(response);
+                  window.location.href="/books";
+              }, 
+              error: function(error) { 
+                  console.log(error); 
+              } 
+          });
+        }
+</script>
+{% endblock %}
+

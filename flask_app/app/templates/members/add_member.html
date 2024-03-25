@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fuild">
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">{% block title %}Add Members{% endblock %}</span>
+    </nav>
+    <form class="container">
+        <div class="form-group row mt-3">
+            <label for="first_name" class="form-label col-sm-2">First Name</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="first_name">
+        </div>
+        <div class="form-group row mt-3">
+            <label for="last_name" class="form-label col-sm-2">Last Name</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="last_name">
+        </div>
+        <div class="form-group row mt-3">
+            <label for="contact_number" class="form-label col-sm-2">Contact Number</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="contact_number" required>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="email" class="form-label col-sm-2">Email</label>
+            <input type="text" class="form-control input-sm col-sm-10" id="email" required/>
+        </div>
+        <div>
+            <button class="btn btn-primary" onclick="saveMemberDetails()" type="button">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+    function saveMemberDetails() {
+        let firstName = document.getElementById('first_name').value;
+        let lastName = document.getElementById('last_name').value;
+        let contactNumber = document.getElementById('contact_number').value;
+        let email = document.getElementById('email').value;
+        $.ajax({ 
+            url: '/members/save_member_details', 
+            type: 'POST', 
+            contentType: 'application/json', 
+            data: JSON.stringify({ 'firstName': firstName, 'lastName': lastName, 'contactNumber': contactNumber, 'email': email}), 
+            success: function(response) { 
+                // document.getElementById('output').innerHTML = response; 
+                alert("Member added to the library.")
+                window.location.href='/members';
+            }, 
+            error: function(error) { 
+                console.log(error); 
+            } 
+        }); 
+    }
+</script>
+{% endblock %}

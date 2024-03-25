@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="jumbotron text-center">
+        <h1>{% block title %} Library Management System {% endblock %}</h1>
+        <p>Tracking books made easy for you!!</p>
+    </div>
+    <div class="container" style="margin:auto">
+        <div class="row border border-danger">
+            <div class="col-sm-6  bg-warning">
+                <button class="btn btn-primary btn-large btn-block" onclick="books()" id="books_list">Books</button>
+            </div>
+            <div class="col-sm-6  bg-success">
+                <button class="btn btn-primary btn-large btn-block" id="members_list" onclick="members()">Members</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function books() {
+          window.location.href = "/books";
+        }
+        function members() {
+            window.location.href = "/members";
+        }
+    </script>
+{% endblock %}
