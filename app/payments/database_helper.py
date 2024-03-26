@@ -19,4 +19,5 @@ def check_total_debt(member_id):
     
     for row in query:
         debt = row[2] - row[1]
-        return debt 
+        return debt
+    return 0 
