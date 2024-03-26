@@ -1,6 +1,29 @@
 # library_ms
 Web application to track books present in the library.
 
+# Steps to run application on your local [Using Docker]
+
+1. Build docker image using Dockerfile. `library-ms` is image name.
+   ```
+   sudo docker build . -t library-ms
+   ```
+2. Verify if the image has been successfully built. Below command lists all the images available on docker host.
+   ```
+   sudo docker images
+   ```
+3. Run the docker compose file. Docker compose file uses the image we built in the previous step.
+   ```
+   sudo docker-compose up
+   ```
+4. On the terminal it will show you the IP on which application can be accessed.
+5. Open the IP in your browser. To access the web application.
+
+# Command to make the stored data persistent. [DB used currently is SQLite]
+
+```
+sudo docker run -dp 127.0.0.1:5000:5000 --name=library-app --mount type=volume,src=library-db,target=/opt/app/ library-ms
+```
+
 Home Screen
 ![Screenshot from 2024-03-26 21-19-08](https://github.com/mridubhatnagar/library_ms/assets/16894718/c9f4e273-20f5-490e-9875-da0f98a2df0b)
 
