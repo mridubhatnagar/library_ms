@@ -18,29 +18,29 @@ Web application to track books present in the library.
 4. On the terminal it will show you the IP on which application can be accessed.
 5. Open the IP in your browser. To access the web application.
 
-# Command to make the stored data persistent. [DB used currently is SQLite]
+### Command to make the stored data persistent. [DB used currently is SQLite]
 
 ```
 sudo docker run -dp 127.0.0.1:5000:5000 --name=library-app --mount type=volume,src=library-db,target=/opt/app/ library-ms
 ```
 
-Home Screen
+**Home Screen**
 ![Screenshot from 2024-03-26 21-19-08](https://github.com/mridubhatnagar/library_ms/assets/16894718/c9f4e273-20f5-490e-9875-da0f98a2df0b)
 
-Books Page
+**Books Page**
 ![Screenshot from 2024-03-26 21-20-30](https://github.com/mridubhatnagar/library_ms/assets/16894718/57718dc1-7e7a-414c-8df8-b4bea1e66ddf)
 
-Add Books Page
+**Add Books Page**
 ![Screenshot from 2024-03-26 21-23-15](https://github.com/mridubhatnagar/library_ms/assets/16894718/d79f583f-4393-4e82-bcd4-d8758d0e7651)
 
-Search Books Page
+**Search Books Page**
 ![Screenshot from 2024-03-26 21-24-51](https://github.com/mridubhatnagar/library_ms/assets/16894718/5ffc3a42-f96f-49e7-821e-f27ec9a79e25)
 
-Members Page
+**Members Page**
 ![Screenshot from 2024-03-26 21-25-32](https://github.com/mridubhatnagar/library_ms/assets/16894718/a140b8c4-326a-4501-a47d-30ab9a5fc4b0)
 
-Member Details Page
+**Member Details Page**
 ![Screenshot from 2024-03-26 21-26-12](https://github.com/mridubhatnagar/library_ms/assets/16894718/5b642ff0-166b-4b78-a278-583b26cdfbe9)
 
-NOTE 
+**NOTE**
 App contains of some more pages like Book Details Page, Issue Book, Return Book, Payment Details, Make Payments etc pages. Screenshot of all the pages is not added here.
