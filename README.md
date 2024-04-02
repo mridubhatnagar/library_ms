@@ -15,7 +15,16 @@ Web application to track books present in the library.
    ```
    sudo docker-compose up
    ```
-4. On the terminal it will show you the IP on which application can be accessed.
+4. Run `sudo docker ps` and copy the container ID of the library app.
+5. Run the following command to access the container shell.
+   ```
+   sudo docker exec -it <container ID> /bin/bash
+   ```
+6. Once you are inside the folder /opt/app/. Run the command to create database tables.
+   ```
+   flask db upgrade
+   ```
+7. On the terminal where you have run docker compose up it will show you the IP on which application can be accessed.
 5. Open the IP in your browser. To access the web application.
 
 ### Command to make the stored data persistent. [DB used currently is SQLite]
